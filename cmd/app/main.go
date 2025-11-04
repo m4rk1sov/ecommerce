@@ -1,6 +1,11 @@
 package main
 
-import "log"
+import (
+	"log"
+
+	"github.com/m4rk1sov/ecommerce/config"
+	"github.com/m4rk1sov/ecommerce/internal/app"
+)
 
 func main() {
 	// config and launch
