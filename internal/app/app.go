@@ -23,13 +23,13 @@ func Run(cfg *config.Config) {
 	defer pg.Close()
 
 	//	use case
-	translationUseCase := translation.New(
+	ecommerceUseCase := ecommerce.New(
 		persistent.New(pg),
 		webapi.New(),
 	)
 
 	httpServer := httpserver.New(l, httpserver.Port(cfg.HTTP.Port))
-	http.NewRouter(httpServer.App, cfg, translationUseCase, l)
+	http.NewRouter(httpServer.App, cfg, ecommerceUseCase, l)
 
 	httpServer.Start()
 
