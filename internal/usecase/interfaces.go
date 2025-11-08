@@ -63,7 +63,6 @@ type GraphRepository interface {
 	GetProductPopularityScore(ctx context.Context, productID primitive.ObjectID) (float64, error)
 }
 
-// RecommendationEngine
 type RecommendationEngine interface {
 	GetPersonalizedRecommendations(ctx context.Context, userID primitive.ObjectID, limit int) (*entity.Recommendation, error)
 	GetCollaborativeRecommendations(ctx context.Context, userID primitive.ObjectID, limit int) (*entity.Recommendation, error)
