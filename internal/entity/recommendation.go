@@ -1,9 +1,11 @@
 package entity
 
-import "go.mongodb.org/mongo-driver/bson/primitive"
+import (
+	"go.mongodb.org/mongo-driver/v2/bson"
+)
 
 type Recommendation struct {
-	UserID    primitive.ObjectID   `json:"userID"`
+	UserID    bson.ObjectID        `json:"userID"`
 	Products  []RecommendedProduct `json:"products"`
 	Algorithm string               `json:"algorithm"` // collaborative, content-based, hybrid
 }
@@ -15,7 +17,7 @@ type RecommendedProduct struct {
 }
 
 type UserSimilarity struct {
-	UserID1    primitive.ObjectID `json:"userID1"`
-	UserID2    primitive.ObjectID `json:"userID2"`
-	Similarity float64            `json:"similarity"`
+	UserID1    bson.ObjectID `json:"userID1"`
+	UserID2    bson.ObjectID `json:"userID2"`
+	Similarity float64       `json:"similarity"`
 }

@@ -5,9 +5,10 @@ import (
 	"time"
 	
 	"github.com/m4rk1sov/ecommerce/internal/entity"
-	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/bson/primitive"
-	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/v2/mongo/options"
+	
+	"go.mongodb.org/mongo-driver/v2/bson"
+	"go.mongodb.org/mongo-driver/v2/mongo"
 )
 
 type UserRepository struct {
@@ -29,11 +30,11 @@ func (r *UserRepository) Create(ctx context.Context, user *entity.User) error {
 		return err
 	}
 	
-	user.ID = result.InsertedID.(primitive.ObjectID)
+	user.ID = result.InsertedID.(bson.ObjectID)
 	return nil
 }
 
-func (r *UserRepository) GetByID(ctx context.Context, id primitive.ObjectID) (*entity.User, error) {
+func (r *UserRepository) GetByID(ctx context.Context, id bson.ObjectID) (*entity.User, error) {
 	var user entity.User
 	err := r.collection.FindOne(ctx, bson.M{"_id": id}).Decode(&user)
 	if err != nil {
@@ -49,4 +50,24 @@ func (r *UserRepository) GetByEmail(ctx context.Context, email string) (*entity.
 		return nil, err
 	}
 	return &user, nil
+}
+
+func (r *UserRepository) Update(ctx context.Context, user *entity.User) error {
+	user.UpdatedAt = time.Now()
+	
+	_, err := r.collection.UpdateOne(
+		ctx,
+		bson.M{"_id": user.ID},
+		bson.M{"set": user},
+	)
+	return err
+}
+
+func (r *UserRepository) Delete(ctx context.Context, id bson.ObjectID) error {
+	_, err := r.collection.DeleteOne(ctx, bson.M{"_id": id})
+	return err
+}
+
+func (r *UserRepository) List(ctx context.Context, limit, offset int) ([]*entity.User, error) {
+	opts := options.Find()
 }
