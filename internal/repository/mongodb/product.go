@@ -4,7 +4,7 @@ import (
 	"context"
 	"errors"
 	"time"
-	
+
 	"github.com/m4rk1sov/ecommerce/internal/entity"
 	"go.mongodb.org/mongo-driver/v2/bson"
 	"go.mongodb.org/mongo-driver/v2/mongo"
@@ -24,12 +24,12 @@ func NewProductRepository(db *mongo.Database) *ProductRepository {
 func (r *ProductRepository) Create(ctx context.Context, product *entity.Product) error {
 	product.CreatedAt = time.Now()
 	product.UpdatedAt = time.Now()
-	
+
 	result, err := r.collection.InsertOne(ctx, product)
 	if err != nil {
 		return err
 	}
-	
+
 	product.ID = result.InsertedID.(bson.ObjectID)
 	return nil
 }
@@ -45,7 +45,7 @@ func (r *ProductRepository) GetByID(ctx context.Context, id bson.ObjectID) (*ent
 
 func (r *ProductRepository) Update(ctx context.Context, product *entity.Product) error {
 	product.UpdatedAt = time.Now()
-	
+
 	_, err := r.collection.UpdateOne(
 		ctx,
 		bson.M{"_id": product.ID},
@@ -71,7 +71,7 @@ func (r *ProductRepository) List(ctx context.Context, limit, offset int) ([]*ent
 			err = errors.Join(err, closeErr)
 		}
 	}(cursor, ctx)
-	
+
 	var products []*entity.Product
 	if err := cursor.All(ctx, &products); err != nil {
 		return nil, err
@@ -81,7 +81,7 @@ func (r *ProductRepository) List(ctx context.Context, limit, offset int) ([]*ent
 
 func (r *ProductRepository) Search(ctx context.Context, query string, category string, limit int) ([]*entity.Product, error) {
 	filter := bson.M{}
-	
+
 	if query != "" {
 		filter["$or"] = []bson.M{
 			{"name": bson.M{"$regex": query, "$options": "i"}},
@@ -89,11 +89,11 @@ func (r *ProductRepository) Search(ctx context.Context, query string, category s
 			{"tags": bson.M{"$regex": query, "$options": "i"}},
 		}
 	}
-	
+
 	if category != "" {
 		filter["category"] = category
 	}
-	
+
 	opts := options.Find().SetLimit(int64(limit))
 	cursor, err := r.collection.Find(ctx, filter, opts)
 	if err != nil {
@@ -105,7 +105,7 @@ func (r *ProductRepository) Search(ctx context.Context, query string, category s
 			err = errors.Join(err, closeErr)
 		}
 	}(cursor, ctx)
-	
+
 	var products []*entity.Product
 	if err := cursor.All(ctx, &products); err != nil {
 		return nil, err
@@ -125,7 +125,7 @@ func (r *ProductRepository) GetByCategory(ctx context.Context, category string, 
 			err = errors.Join(err, closeErr)
 		}
 	}(cursor, ctx)
-	
+
 	var products []*entity.Product
 	if err := cursor.All(ctx, &products); err != nil {
 		return nil, err
@@ -137,7 +137,7 @@ func (r *ProductRepository) GetPopular(ctx context.Context, limit int) ([]*entit
 	opts := options.Find().
 		SetSort(bson.D{{Key: "rating", Value: -1}, {Key: "review_count", Value: -1}}).
 		SetLimit(int64(limit))
-	
+
 	cursor, err := r.collection.Find(ctx, bson.M{}, opts)
 	if err != nil {
 		return nil, err
@@ -148,11 +148,11 @@ func (r *ProductRepository) GetPopular(ctx context.Context, limit int) ([]*entit
 			err = errors.Join(err, closeErr)
 		}
 	}(cursor, ctx)
-	
+
 	var products []*entity.Product
 	if err := cursor.All(ctx, &products); err != nil {
 		return nil, err
 	}
-	
+
 	return products, nil
 }
