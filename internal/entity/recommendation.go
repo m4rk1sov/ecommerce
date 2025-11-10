@@ -8,6 +8,7 @@ type Recommendation struct {
 	UserID    bson.ObjectID        `json:"userID"`
 	Products  []RecommendedProduct `json:"products"`
 	Algorithm string               `json:"algorithm"` // collaborative, content-based, hybrid
+	Score     float64              `json:"score"`
 }
 
 type RecommendedProduct struct {

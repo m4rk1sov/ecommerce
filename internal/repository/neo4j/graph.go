@@ -3,7 +3,7 @@ package neo4j
 import (
 	"context"
 	"errors"
-	
+
 	"github.com/m4rk1sov/ecommerce/internal/entity"
 	"github.com/neo4j/neo4j-go-driver/v5/neo4j"
 	"go.mongodb.org/mongo-driver/v2/bson"
@@ -33,7 +33,7 @@ func (r *GraphRepository) CreateUserProductRelation(
 			err = errors.Join(err, closeErr)
 		}
 	}(session, ctx)
-	
+
 	query := `
 		MERGE (u:User {id: $userID})
         MERGE (p:Product {id: $productID})
@@ -41,14 +41,14 @@ func (r *GraphRepository) CreateUserProductRelation(
         ON CREATE SET r.weight = $weight, r.count = 1, r.created_at = timestamp()
         ON MATCH SET r.weight = r.weight + $weight, r.count = r.count + 1, r.updated_at = timestamp()
 	`
-	
+
 	_, err = session.Run(ctx, query, map[string]interface{}{
 		"userID":    userID.Hex(),
 		"productID": productID.Hex(),
 		"relType":   relType,
 		"weight":    weight,
 	})
-	
+
 	return err
 }
 
@@ -61,30 +61,30 @@ func (r *GraphRepository) GetUserProductRelations(ctx context.Context, userID bs
 			err = errors.Join(err, closeErr)
 		}
 	}(session, ctx)
-	
+
 	query := `
 		MATCH (u:User {id: $userID})-[r:INTERACTED]->(p:Product)
 		RETURN p.id AS productID, r.Type as type, r.weight AS weight, r.updated_at AS timestamp
 		ORDER BY r.updated_at DESC
 	`
-	
+
 	result, err := session.Run(ctx, query, map[string]interface{}{
 		"userID": userID.Hex(),
 	})
 	if err != nil {
 		return nil, err
 	}
-	
+
 	var interactions []entity.Interaction
 	for result.Next(ctx) {
 		record := result.Record()
-		
+
 		productIDStr, _ := record.Get("productID")
 		productID, _ := bson.ObjectIDFromHex(productIDStr.(string))
-		
+
 		interactionType, _ := record.Get("type")
 		weight, _ := record.Get("weight")
-		
+
 		interactions = append(interactions, entity.Interaction{
 			UserID:    userID,
 			ProductID: productID,
@@ -104,7 +104,7 @@ func (r *GraphRepository) FindSimilarUsers(ctx context.Context, userID bson.Obje
 			err = errors.Join(err, closeErr)
 		}
 	}(session, ctx)
-	
+
 	// Collaborative filtering: find users who interacted with similar products
 	query := `
         MATCH (u1:User {id: $userID})-[r1:INTERACTED]->(p:Product)<-[r2:INTERACTED]-(u2:User)
@@ -117,7 +117,7 @@ func (r *GraphRepository) FindSimilarUsers(ctx context.Context, userID bson.Obje
         ORDER BY similarity DESC
         LIMIT $limit
     `
-	
+
 	result, err := session.Run(ctx, query, map[string]interface{}{
 		"userID": userID.Hex(),
 		"limit":  limit,
@@ -125,23 +125,23 @@ func (r *GraphRepository) FindSimilarUsers(ctx context.Context, userID bson.Obje
 	if err != nil {
 		return nil, err
 	}
-	
+
 	var similarities []entity.UserSimilarity
 	for result.Next(ctx) {
 		record := result.Record()
-		
+
 		userID2Str, _ := record.Get("userID2")
 		userID2, _ := bson.ObjectIDFromHex(userID2Str.(string))
-		
+
 		similarity, _ := record.Get("similarity")
-		
+
 		similarities = append(similarities, entity.UserSimilarity{
 			UserID1:    userID,
 			UserID2:    userID2,
 			Similarity: similarity.(float64),
 		})
 	}
-	
+
 	return similarities, result.Err()
 }
 
@@ -158,7 +158,7 @@ func (r *GraphRepository) GetCollaborativeRecommendations(
 			err = errors.Join(err, closeErr)
 		}
 	}(session, ctx)
-	
+
 	query := `
         // Find similar users
         MATCH (u1:User {id: $userID})-[r1:INTERACTED]->(p1:Product)<-[r2:INTERACTED]-(u2:User)
@@ -177,7 +177,7 @@ func (r *GraphRepository) GetCollaborativeRecommendations(
         ORDER BY score DESC
         LIMIT $limit
     `
-	
+
 	result, err := session.Run(ctx, query, map[string]interface{}{
 		"userID": userID.Hex(),
 		"limit":  limit,
@@ -185,7 +185,7 @@ func (r *GraphRepository) GetCollaborativeRecommendations(
 	if err != nil {
 		return nil, err
 	}
-	
+
 	var productIDs []bson.ObjectID
 	for result.Next(ctx) {
 		record := result.Record()
@@ -193,7 +193,7 @@ func (r *GraphRepository) GetCollaborativeRecommendations(
 		productID, _ := bson.ObjectIDFromHex(productIDStr.(string))
 		productIDs = append(productIDs, productID)
 	}
-	
+
 	return productIDs, result.Err()
 }
 
@@ -210,7 +210,7 @@ func (r *GraphRepository) GetFrequentlyBoughtTogether(
 			err = errors.Join(err, closeErr)
 		}
 	}(session, ctx)
-	
+
 	query := `
         MATCH (p1:Product {id: $productID})<-[r1:INTERACTED {type: 'purchase'}]-(u:User)
               -[r2:INTERACTED {type: 'purchase'}]->(p2:Product)
@@ -220,7 +220,7 @@ func (r *GraphRepository) GetFrequentlyBoughtTogether(
         ORDER BY frequency DESC
         LIMIT $limit
     `
-	
+
 	result, err := session.Run(ctx, query, map[string]interface{}{
 		"productID": productID.Hex(),
 		"limit":     limit,
@@ -228,7 +228,7 @@ func (r *GraphRepository) GetFrequentlyBoughtTogether(
 	if err != nil {
 		return nil, err
 	}
-	
+
 	var productIDs []bson.ObjectID
 	for result.Next(ctx) {
 		record := result.Record()
@@ -236,7 +236,7 @@ func (r *GraphRepository) GetFrequentlyBoughtTogether(
 		productId, _ := bson.ObjectIDFromHex(productIDStr.(string))
 		productIDs = append(productIDs, productId)
 	}
-	
+
 	return productIDs, result.Err()
 }
 
@@ -253,7 +253,7 @@ func (r *GraphRepository) GetSimilarProducts(
 			err = errors.Join(err, closeErr)
 		}
 	}(session, ctx)
-	
+
 	query := `
         MATCH (p1:Product {id: $productID})<-[r1:INTERACTED]-(u:User)-[r2:INTERACTED]->(p2:Product)
         WHERE p1 <> p2
@@ -262,7 +262,7 @@ func (r *GraphRepository) GetSimilarProducts(
         ORDER BY similarity DESC
         LIMIT $limit
     `
-	
+
 	result, err := session.Run(ctx, query, map[string]interface{}{
 		"productID": productID.Hex(),
 		"limit":     limit,
@@ -270,7 +270,7 @@ func (r *GraphRepository) GetSimilarProducts(
 	if err != nil {
 		return nil, err
 	}
-	
+
 	var productIDs []bson.ObjectID
 	for result.Next(ctx) {
 		record := result.Record()
@@ -278,7 +278,7 @@ func (r *GraphRepository) GetSimilarProducts(
 		productId, _ := bson.ObjectIDFromHex(productIDStr.(string))
 		productIDs = append(productIDs, productId)
 	}
-	
+
 	return productIDs, result.Err()
 }
 
@@ -294,7 +294,7 @@ func (r *GraphRepository) CalculateUserSimilarity(
 			err = errors.Join(err, closeErr)
 		}
 	}(session, ctx)
-	
+
 	query := `
         MATCH (u1:User {id: $userID1})-[:INTERACTED]->(p:Product)<-[:INTERACTED]-(u2:User {id: $userID2})
         WITH COUNT(DISTINCT p) AS intersection
@@ -307,7 +307,7 @@ func (r *GraphRepository) CalculateUserSimilarity(
         
         RETURN toFloat(intersection) / (count1 + count2 - intersection) AS similarity
     `
-	
+
 	result, err := session.Run(ctx, query, map[string]interface{}{
 		"userID1": userID1.Hex(),
 		"userID2": userID2.Hex(),
@@ -315,7 +315,7 @@ func (r *GraphRepository) CalculateUserSimilarity(
 	if err != nil {
 		return 0, err
 	}
-	
+
 	if result.Next(ctx) {
 		record := result.Record()
 		similarity, _ := record.Get("similarity")
@@ -323,7 +323,7 @@ func (r *GraphRepository) CalculateUserSimilarity(
 			return similarity.(float64), nil
 		}
 	}
-	
+
 	return 0, result.Err()
 }
 
@@ -339,19 +339,19 @@ func (r *GraphRepository) GetProductPopularityScore(
 			err = errors.Join(err, closeErr)
 		}
 	}(session, ctx)
-	
+
 	query := `
         MATCH (p:Product {id: $productID})<-[r:INTERACTED]-(u:User)
         RETURN SUM(r.weight) AS popularity
     `
-	
+
 	result, err := session.Run(ctx, query, map[string]interface{}{
 		"productID": productID.Hex(),
 	})
 	if err != nil {
 		return 0, err
 	}
-	
+
 	if result.Next(ctx) {
 		record := result.Record()
 		popularity, _ := record.Get("popularity")
@@ -359,6 +359,6 @@ func (r *GraphRepository) GetProductPopularityScore(
 			return popularity.(float64), nil
 		}
 	}
-	
+
 	return 0, result.Err()
 }
