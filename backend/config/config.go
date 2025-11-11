@@ -10,14 +10,15 @@ import (
 
 type (
 	Config struct {
-		App     App
-		HTTP    HTTP
-		Log     Log
-		MongoDB MongoDB
-		Redis   Redis
-		Neo4j   Neo4j
-		JWT     JWT
-		Swagger Swagger
+		App         App
+		HTTP        HTTP
+		Log         Log
+		MongoDB     MongoDB
+		Redis       Redis
+		Neo4j       Neo4j
+		JWT         JWT
+		Swagger     Swagger
+		Interaction Interaction
 	}
 	
 	App struct {
