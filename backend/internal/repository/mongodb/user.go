@@ -59,7 +59,7 @@ func (r *UserRepository) Update(ctx context.Context, user *entity.User) error {
 	_, err := r.collection.UpdateOne(
 		ctx,
 		bson.M{"_id": user.ID},
-		bson.M{"set": user},
+		bson.M{"$set": user},
 	)
 	return err
 }

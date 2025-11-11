@@ -4,7 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"time"
-	
+
 	"github.com/redis/go-redis/v9"
 )
 
@@ -28,12 +28,12 @@ func NewSessionRepository(client *redis.Client) *SessionRepository {
 
 func (r *SessionRepository) Create(ctx context.Context, sessionID string, session *Session) error {
 	session.CreatedAt = time.Now()
-	
+
 	data, err := json.Marshal(session)
 	if err != nil {
 		return err
 	}
-	
+
 	return r.client.Set(ctx, UserSessionKey(sessionID), data, sessionTTL).Err()
 }
 
@@ -42,12 +42,12 @@ func (r *SessionRepository) Get(ctx context.Context, sessionID string) (*Session
 	if err != nil {
 		return nil, err
 	}
-	
+
 	var session Session
 	if err := json.Unmarshal([]byte(data), &session); err != nil {
 		return nil, err
 	}
-	
+
 	return &session, nil
 }
 

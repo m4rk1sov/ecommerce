@@ -2,7 +2,7 @@ package usecase
 
 import (
 	"context"
-	
+
 	"github.com/m4rk1sov/ecommerce/internal/entity"
 	"go.mongodb.org/mongo-driver/v2/bson"
 )

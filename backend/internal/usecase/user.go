@@ -3,10 +3,10 @@ package usecase
 import (
 	"context"
 	"time"
-	
+
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/m4rk1sov/ecommerce/internal/entity"
-	
+
 	"go.mongodb.org/mongo-driver/v2/bson"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -30,7 +30,7 @@ func (uc *UserUseCase) Register(ctx context.Context, email, username, password, 
 	if err != nil {
 		return nil, "", err
 	}
-	
+
 	user := &entity.User{
 		Email:        email,
 		Username:     username,
@@ -39,16 +39,16 @@ func (uc *UserUseCase) Register(ctx context.Context, email, username, password, 
 		LastName:     lastName,
 		Preferences:  entity.UserPreferences{Categories: []string{}, PriceRange: entity.PriceRange{}},
 	}
-	
+
 	if err := uc.repo.Create(ctx, user); err != nil {
 		return nil, "", err
 	}
-	
+
 	token, err := uc.generateToken(user.ID)
 	if err != nil {
 		return nil, "", err
 	}
-	
+
 	return user, token, nil
 }
 
@@ -57,16 +57,16 @@ func (uc *UserUseCase) Login(ctx context.Context, email, password string) (*enti
 	if err != nil {
 		return nil, "", err
 	}
-	
+
 	if err := bcrypt.CompareHashAndPassword([]byte(user.PasswordHash), []byte(password)); err != nil {
 		return nil, "", err
 	}
-	
+
 	token, err := uc.generateToken(user.ID)
 	if err != nil {
 		return nil, "", err
 	}
-	
+
 	return user, token, nil
 }
 
@@ -83,7 +83,7 @@ func (uc *UserUseCase) generateToken(userID bson.ObjectID) (string, error) {
 		"user_id": userID.Hex(),
 		"exp":     time.Now().Add(uc.jwtExpiry).Unix(),
 	}
-	
+
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	return token.SignedString([]byte(uc.jwtSecret))
 }

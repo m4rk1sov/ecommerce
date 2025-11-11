@@ -9,7 +9,7 @@ import (
 	"go.mongodb.org/mongo-driver/v2/bson"
 )
 
-func AuthMiddleware() gin.HandlerFunc {
+func AuthMiddleware(secret string) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		authHeader := c.GetHeader("Authorization")
 		if authHeader == "" {
@@ -18,10 +18,11 @@ func AuthMiddleware() gin.HandlerFunc {
 			return
 		}
 
-		tokenString := strings.Replace(authHeader, "Bearer ", "", 1)
+		//tokenString := strings.Replace(authHeader, "Bearer ", "", 1)
+		tokenString := strings.TrimPrefix(authHeader, "Bearer ")
 
 		token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
-			return []byte("your-secret-key"), nil // Use env variable in production
+			return []byte(secret), nil
 		})
 
 		if err != nil || !token.Valid {
@@ -32,7 +33,10 @@ func AuthMiddleware() gin.HandlerFunc {
 
 		claims := token.Claims.(jwt.MapClaims)
 		userIDStr := claims["user_id"].(string)
-		userID, _ := bson.ObjectIDFromHex(userIDStr)
+		userID, err := bson.ObjectIDFromHex(userIDStr)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to get id from token"})
+		}
 
 		c.Set("user_id", userID)
 		c.Next()

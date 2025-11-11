@@ -66,7 +66,7 @@ func PopularProductsKey() string {
 }
 
 func UserSessionKey(sessionID string) string {
-	return fmt.Sprintf("sessing:%s", sessionID)
+	return fmt.Sprintf("session:%s", sessionID)
 }
 
 func ProductViewCountKey(productID string) string {
