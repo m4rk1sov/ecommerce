@@ -29,7 +29,7 @@ func GetProduct(uc *usecase.ProductUseCase) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		id, err := bson.ObjectIDFromHex(c.Param("id"))
 		if err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid product ID"})
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid productID"})
 			return
 		}
 
@@ -80,7 +80,7 @@ func UpdateProduct(uc *usecase.ProductUseCase) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		id, err := bson.ObjectIDFromHex(c.Param("id"))
 		if err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid product ID"})
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid productID"})
 			return
 		}
 
@@ -104,7 +104,7 @@ func DeleteProduct(uc *usecase.ProductUseCase) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		id, err := bson.ObjectIDFromHex(c.Param("id"))
 		if err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid product ID"})
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid productID"})
 			return
 		}
 

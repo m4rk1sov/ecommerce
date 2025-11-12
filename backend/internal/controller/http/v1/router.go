@@ -3,6 +3,7 @@ package v1
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/m4rk1sov/ecommerce/internal/usecase"
+	"go.uber.org/zap"
 )
 
 type UseCases struct {
@@ -12,7 +13,17 @@ type UseCases struct {
 	Recommendation *usecase.RecommendationUseCase
 }
 
-func NewRouterWithMiddleware(handler *gin.Engine, uc *UseCases, auth gin.HandlerFunc) {
+func NewRouterWithMiddleware(l *zap.SugaredLogger, handler *gin.Engine, uc *UseCases, auth gin.HandlerFunc) {
+	handler.Use(gin.Recovery())
+	handler.Use(corsMiddleware())
+	handler.Use(loggingMiddleware(l))
+
+	// Health
+	handler.GET("/health", func(c *gin.Context) {
+		c.JSON(200, gin.H{"status": "ok"})
+	})
+
+	// api v1 group
 	h := handler.Group("/api/v1")
 	{
 		// Authentication
@@ -55,6 +66,7 @@ func NewRouterWithMiddleware(handler *gin.Engine, uc *UseCases, auth gin.Handler
 		{
 			interactions.POST("/view", RecordView(uc.Interaction))
 			interactions.POST("/like", RecordLike(uc.Interaction))
+			interactions.POST("/cart", RecordCart(uc.Interaction))
 			interactions.POST("/purchase", RecordPurchase(uc.Interaction))
 		}
 

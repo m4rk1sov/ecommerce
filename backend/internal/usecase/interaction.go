@@ -38,6 +38,19 @@ func (uc *InteractionUseCase) RecordInteraction(ctx context.Context, userID, pro
 	return uc.graphRepo.CreateUserProductRelation(ctx, userID, productID, string(interactionType), weight)
 }
 
+// CreatePurchase records a purchase
+func (uc *InteractionUseCase) CreatePurchase(ctx context.Context, purchase *entity.Purchase) error {
+	return uc.repo.CreatePurchase(ctx, purchase)
+}
+
+// GetUserPurchaseHistory gets user's purchase history
+func (uc *InteractionUseCase) GetUserPurchaseHistory(
+	ctx context.Context,
+	userID bson.ObjectID,
+) ([]*entity.Purchase, error) {
+	return uc.repo.GetUserPurchaseHistory(ctx, userID)
+}
+
 func getInteractionWeight(t entity.InteractionType) float64 {
 	switch t {
 	case entity.InteractionView:
