@@ -1,0 +1,23 @@
+logs/
+*.log
+*.md
+dist/
+build/
+bin/
+*.exe
+.env
+*.local
+
+# git
+.git
+.gitattributes
+.gitignore
+
+# IDE files
+.vscode/
+.idea/
+.idea
+
+# Docker files
+Dockerfile
+docker-compose.yml
