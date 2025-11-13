@@ -1,4 +1,4 @@
-// src/context/AuthContext.jsx
+
 /**
  * Authentication Context
  *
@@ -137,6 +137,7 @@ export const AuthProvider = ({ children }) => {
  * - Can add validation/error handling
  * - Provides better error messages
  */
+
 export const useAuth = () => {
     const context = useContext(AuthContext);
 

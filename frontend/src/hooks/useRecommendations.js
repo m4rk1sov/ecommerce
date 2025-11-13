@@ -1,5 +1,3 @@
-//============================================================
-// src/hooks/useRecommendations.js
 /**
  * Recommendations Hook
  * Fetches personalized recommendations
