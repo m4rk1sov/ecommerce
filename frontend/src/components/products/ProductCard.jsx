@@ -1,5 +1,3 @@
-// ============================================================
-// src/components/products/ProductCard.jsx
 /**
  * Product Card Component
  * Displays product in grid/list

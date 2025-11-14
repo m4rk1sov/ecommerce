@@ -1,5 +1,3 @@
-// ============================================================
-// src/api/products.js
 /**
  * Product API
  * Handles all product-related endpoints

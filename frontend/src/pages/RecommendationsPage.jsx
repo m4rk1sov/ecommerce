@@ -1,5 +1,3 @@
-// ============================================================
-// src/pages/RecommendationsPage.jsx
 /**
  * Recommendations Page
  * Shows different recommendation algorithms
@@ -69,17 +67,3 @@ export const RecommendationsPage = () => {
         </div>
     );
 };
-
-/**
- * Pages Summary:
- *
- * ✅ LoginPage: Authentication with validation
- * ✅ RegisterPage: User registration form
- * ✅ HomePage: Hero + featured + recommendations
- * ✅ ProductsPage: Search + filter + list
- * ✅ RecommendationsPage: Compare algorithms
- *
- * Pattern: Pages use hooks for data, components for UI
- *
- * Next: Main App component with routing + layout
- */

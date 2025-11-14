@@ -1,5 +1,3 @@
-// ============================================================
-// src/api/interactions.js
 /**
  * Interaction API
  * Tracks user behavior (views, likes, purchases)

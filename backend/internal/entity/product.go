@@ -2,7 +2,7 @@ package entity
 
 import (
 	"time"
-	
+
 	"go.mongodb.org/mongo-driver/v2/bson"
 )
 
@@ -12,6 +12,7 @@ type Product struct {
 	Description string        `bson:"description" json:"description"`
 	Category    string        `bson:"category" json:"category"`
 	Price       float64       `bson:"price" json:"price"`
+	ImageURL    string        `bson:"image_url" json:"imageUrl"`
 	Stock       int           `bson:"stock" json:"stock"`
 	Tags        []string      `bson:"tags" json:"tags"`
 	Rating      float64       `bson:"rating" json:"rating"`

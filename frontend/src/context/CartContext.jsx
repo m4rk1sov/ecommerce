@@ -1,5 +1,3 @@
-//============================================================
-// src/context/CartContext.jsx
 /**
  * Shopping Cart Context
  *

@@ -1,5 +1,3 @@
-// ============================================================
-// src/pages/HomePage.jsx
 /**
  * Home Page
  *
@@ -89,7 +87,7 @@ export const HomePage = () => {
                         Shop by Category
                     </h2>
                     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-                        {['Electronics', 'Clothing', 'Books', 'Home & Garden', 'Sports', 'Toys'].map(category => (
+                        {['Electronics', 'Clothing', 'Books', 'Home & Garden', 'Sports', 'Toys', 'Health and Beauty', 'Accessories'].map(category => (
                             <Link
                                 key={category}
                                 to={`/products?category=${category}`}

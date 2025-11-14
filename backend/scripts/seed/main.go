@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"math/rand"
+	"strings"
 	"time"
 
 	"github.com/m4rk1sov/ecommerce/config"
@@ -43,7 +44,7 @@ func main() {
 	productRepo := mongoRepo.NewProductRepository(db)
 
 	log.Println("Starting database seeding...")
-
+	start := time.Now()
 	// Seed users
 	users := seedUsers(ctx, userRepo)
 	log.Printf("✅ Created %d users\n", len(users))
@@ -51,11 +52,13 @@ func main() {
 	// Seed products
 	products := seedProducts(ctx, productRepo)
 	log.Printf("✅ Created %d products\n", len(products))
+	elapsed := time.Since(start)
 
 	log.Println("✅ Database seeding completed!")
-	log.Println("\n📝 Demo Credentials:")
-	log.Println("   Email: user1@example.com")
-	log.Println("   Password: password123")
+	log.Printf("Time taken to seed the database: %v", elapsed)
+	//log.Println("\n📝 Demo Credentials:")
+	//log.Println("   Email: user1@example.com")
+	//log.Println("   Password: password123")
 }
 
 func seedUsers(ctx context.Context, repo *mongoRepo.UserRepository) []*entity.User {
@@ -65,7 +68,7 @@ func seedUsers(ctx context.Context, repo *mongoRepo.UserRepository) []*entity.Us
 		hashedPassword, _ := bcrypt.GenerateFromPassword([]byte("password123"), bcrypt.DefaultCost)
 
 		user := &entity.User{
-			Email:        fmt.Sprintf("user%d@example.com", i),
+			Email:        fmt.Sprintf("user%d%d%d%d@example.com", rand.Intn(98)+1, rand.Intn(98)+1, rand.Intn(98)+1, rand.Intn(98)+1),
 			Username:     fmt.Sprintf("user%d", i),
 			PasswordHash: string(hashedPassword),
 			FirstName:    fmt.Sprintf("First%d", i),
@@ -88,7 +91,7 @@ func seedUsers(ctx context.Context, repo *mongoRepo.UserRepository) []*entity.Us
 }
 
 func seedProducts(ctx context.Context, repo *mongoRepo.ProductRepository) []*entity.Product {
-	categories := []string{"Electronics", "Clothing", "Books", "Home & Garden", "Sports", "Toys"}
+	categories := []string{"Electronics", "Clothing", "Books", "Home & Garden", "Sports", "Toys", "Health and Beauty", "Accessories"}
 
 	products := make([]*entity.Product, 0, 50)
 
@@ -120,6 +123,14 @@ func seedProducts(ctx context.Context, repo *mongoRepo.ProductRepository) []*ent
 			"Building Blocks", "Puzzle Game", "Remote Control Car",
 			"Board Game", "Action Figure", "Stuffed Animal", "Art Set",
 		},
+		"Health and Beauty": {
+			"Male Shampoo", "Hair Mask", "Mint Toothpaste", "Bath Soap",
+			"Innovative toothbrush", "Face Wash", "Hands Lotion", "Sunscreen",
+		},
+		"Accessories": {
+			"Silver Ring", "Golden Earring", "Diamond Necklace", "Metal Wristband",
+			"Steel Chain", "Golden watch", "RayBan glasses", "Sunglasses",
+		},
 	}
 
 	rand.NewSource(time.Now().UnixNano())
@@ -135,6 +146,7 @@ func seedProducts(ctx context.Context, repo *mongoRepo.ProductRepository) []*ent
 				Description: fmt.Sprintf("High-quality %s for your needs. Perfect for everyday use with excellent durability and performance.", name),
 				Category:    category,
 				Price:       basePrice,
+				ImageURL:    randomImage(name),
 				Stock:       rand.Intn(100) + 1,
 				Tags:        []string{category, "popular", "trending"},
 				Rating:      float64(rand.Intn(5)) + 1.0 + rand.Float64(),
@@ -155,4 +167,9 @@ func seedProducts(ctx context.Context, repo *mongoRepo.ProductRepository) []*ent
 	}
 
 	return products
+}
+
+func randomImage(name string) string {
+	safe := strings.ReplaceAll(strings.ToLower(name), " ", "-")
+	return fmt.Sprintf("https://picsum.photos/seed/%s/600/400", safe)
 }

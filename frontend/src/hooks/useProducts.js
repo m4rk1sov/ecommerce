@@ -1,5 +1,3 @@
-// ============================================================
-// src/hooks/useProducts.js
 /**
  * Products Hook
  * Encapsulates product fetching logic

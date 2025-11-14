@@ -1,5 +1,3 @@
-// ============================================================
-// src/components/layout/CartSidebar.jsx
 /**
  * Shopping Cart Sidebar
  * Slides in from right when opened

@@ -1,5 +1,3 @@
-// ============================================================
-// src/components/common/Input.jsx
 /**
  * Input Component with Label and Error Display
  */

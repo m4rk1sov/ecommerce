@@ -1,5 +1,3 @@
-// ============================================================
-// src/components/common/Loading.jsx
 /**
  * Loading Spinner Component
  * Centralized loading indicator

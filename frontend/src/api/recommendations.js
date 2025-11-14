@@ -1,5 +1,3 @@
-// ============================================================
-// src/api/recommendations.js
 /**
  * Recommendations API
  * Different algorithms for different use cases

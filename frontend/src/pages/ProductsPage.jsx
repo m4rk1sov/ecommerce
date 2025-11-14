@@ -1,5 +1,3 @@
-// ============================================================
-// src/pages/ProductsPage.jsx
 /**
  * Products Listing Page
  *

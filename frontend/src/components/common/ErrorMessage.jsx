@@ -1,5 +1,3 @@
-// ============================================================
-// src/components/common/ErrorMessage.jsx
 /**
  * Error Display Component
  */

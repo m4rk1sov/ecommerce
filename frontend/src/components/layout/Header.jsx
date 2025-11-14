@@ -1,19 +1,3 @@
-// src/components/layout/Header.jsx
-/**
- * Header Component
- *
- * Features:
- * - Logo and navigation
- * - Search bar
- * - User menu (login/logout)
- * - Cart icon with item count
- *
- * Why separate Header?
- * - Appears on every page
- * - Contains global navigation
- * - Manages authentication state
- */
-
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
@@ -30,6 +14,9 @@ export const Header = () => {
         navigate('/login');
     };
 
+    // Check if user is admin (for demo: user1@example.com)
+    const isAdmin = user?.email === 'user1@example.com';
+
     return (
         <header className="bg-white shadow-md sticky top-0 z-50">
             <div className="container mx-auto px-4">
@@ -42,16 +29,23 @@ export const Header = () => {
 
                     {/* Navigation */}
                     <nav className="hidden md:flex items-center space-x-6">
-                        <Link to="/" className="text-gray-700 hover:text-blue-600">
+                        <Link to="/" className="text-gray-700 hover:text-blue-600 font-medium">
                             Home
                         </Link>
-                        <Link to="/products" className="text-gray-700 hover:text-blue-600">
+                        <Link to="/products" className="text-gray-700 hover:text-blue-600 font-medium">
                             Products
                         </Link>
                         {isAuthenticated && (
-                            <Link to="/recommendations" className="text-gray-700 hover:text-blue-600">
-                                Recommendations
-                            </Link>
+                            <>
+                                <Link to="/recommendations" className="text-gray-700 hover:text-blue-600 font-medium">
+                                    Recommendations
+                                </Link>
+                                {isAdmin && (
+                                    <Link to="/admin" className="text-gray-700 hover:text-blue-600 font-medium">
+                                        Admin
+                                    </Link>
+                                )}
+                            </>
                         )}
                     </nav>
 
@@ -75,9 +69,12 @@ export const Header = () => {
                         {/* User Menu */}
                         {isAuthenticated ? (
                             <div className="flex items-center space-x-4">
-                <span className="text-sm text-gray-700">
-                  Hi, {user?.firstName}
-                </span>
+                                <Link
+                                    to="/profile"
+                                    className="text-sm text-gray-700 hover:text-blue-600 font-medium"
+                                >
+                                    👤 {user?.firstName}
+                                </Link>
                                 <Button variant="secondary" size="small" onClick={handleLogout}>
                                     Logout
                                 </Button>
@@ -98,4 +95,3 @@ export const Header = () => {
         </header>
     );
 };
-

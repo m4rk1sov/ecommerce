@@ -1,5 +1,3 @@
-// ============================================================
-// src/components/common/Card.jsx
 /**
  * Card Component
  * Container for content with consistent styling

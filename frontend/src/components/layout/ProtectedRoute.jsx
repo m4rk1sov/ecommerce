@@ -1,5 +1,3 @@
-// ============================================================
-// src/components/layout/ProtectedRoute.jsx
 /**
  * Protected Route Component
  * Redirects to login if not authenticated

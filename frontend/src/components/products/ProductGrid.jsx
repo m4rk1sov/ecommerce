@@ -1,5 +1,3 @@
-// ============================================================
-// src/components/products/ProductGrid.jsx
 /**
  * Product Grid Component
  * Responsive grid layout for products

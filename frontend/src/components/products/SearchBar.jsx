@@ -1,5 +1,3 @@
-// ============================================================
-// src/components/products/SearchBar.jsx
 /**
  * Search Bar Component
  * Handles product search with debouncing

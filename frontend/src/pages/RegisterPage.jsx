@@ -1,5 +1,3 @@
-// ============================================================
-// src/pages/RegisterPage.jsx
 /**
  * Registration Page
  */
