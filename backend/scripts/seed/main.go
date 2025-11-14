@@ -7,13 +7,13 @@ import (
 	"math/rand"
 	"strings"
 	"time"
-
+	
 	"github.com/m4rk1sov/ecommerce/config"
 	"github.com/m4rk1sov/ecommerce/internal/entity"
 	"go.mongodb.org/mongo-driver/v2/mongo"
 	"go.mongodb.org/mongo-driver/v2/mongo/options"
 	"golang.org/x/crypto/bcrypt"
-
+	
 	mongoRepo "github.com/m4rk1sov/ecommerce/internal/repository/mongodb"
 )
 
@@ -23,7 +23,7 @@ func main() {
 	if err != nil {
 		log.Fatal("Failed to load config:", err)
 	}
-
+	
 	ctx := context.Background()
 	// Connect to MongoDB
 	client, err := mongo.Connect(options.Client().ApplyURI(cfg.MongoDB.URI))
@@ -36,37 +36,37 @@ func main() {
 			log.Printf("Failed to close mongodb: %v", err)
 		}
 	}(client, ctx)
-
+	
 	db := client.Database(cfg.MongoDB.Database)
-
+	
 	// Initialize repositories
 	userRepo := mongoRepo.NewUserRepository(db)
 	productRepo := mongoRepo.NewProductRepository(db)
-
+	
 	log.Println("Starting database seeding...")
 	start := time.Now()
 	// Seed users
 	users := seedUsers(ctx, userRepo)
 	log.Printf("✅ Created %d users\n", len(users))
-
+	
 	// Seed products
 	products := seedProducts(ctx, productRepo)
 	log.Printf("✅ Created %d products\n", len(products))
 	elapsed := time.Since(start)
-
+	
 	log.Println("✅ Database seeding completed!")
 	log.Printf("Time taken to seed the database: %v", elapsed)
-	//log.Println("\n📝 Demo Credentials:")
-	//log.Println("   Email: user1@example.com")
-	//log.Println("   Password: password123")
+	log.Println("\n📝 Demo Credentials:")
+	log.Println("   Email: user1@example.com")
+	log.Println("   Password: password123")
 }
 
 func seedUsers(ctx context.Context, repo *mongoRepo.UserRepository) []*entity.User {
 	users := make([]*entity.User, 0, 10)
-
+	
 	for i := 1; i <= 10; i++ {
 		hashedPassword, _ := bcrypt.GenerateFromPassword([]byte("password123"), bcrypt.DefaultCost)
-
+		
 		user := &entity.User{
 			Email:        fmt.Sprintf("user%d%d%d%d@example.com", rand.Intn(98)+1, rand.Intn(98)+1, rand.Intn(98)+1, rand.Intn(98)+1),
 			Username:     fmt.Sprintf("user%d", i),
@@ -78,23 +78,23 @@ func seedUsers(ctx context.Context, repo *mongoRepo.UserRepository) []*entity.Us
 				PriceRange: entity.PriceRange{Min: 0, Max: 1000},
 			},
 		}
-
+		
 		if err := repo.Create(ctx, user); err != nil {
 			log.Printf("Failed to create user %d: %v\n", i, err)
 			continue
 		}
-
+		
 		users = append(users, user)
 	}
-
+	
 	return users
 }
 
 func seedProducts(ctx context.Context, repo *mongoRepo.ProductRepository) []*entity.Product {
 	categories := []string{"Electronics", "Clothing", "Books", "Home & Garden", "Sports", "Toys", "Health and Beauty", "Accessories"}
-
+	
 	products := make([]*entity.Product, 0, 50)
-
+	
 	productTemplates := map[string][]string{
 		"Electronics": {
 			"Wireless Gaming Mouse", "Mechanical Keyboard", "4K Monitor",
@@ -132,15 +132,15 @@ func seedProducts(ctx context.Context, repo *mongoRepo.ProductRepository) []*ent
 			"Steel Chain", "Golden watch", "RayBan glasses", "Sunglasses",
 		},
 	}
-
+	
 	rand.NewSource(time.Now().UnixNano())
-
+	
 	for _, category := range categories {
 		templates := productTemplates[category]
-
+		
 		for _, name := range templates {
 			basePrice := float64(rand.Intn(1000)) + 9.99
-
+			
 			product := &entity.Product{
 				Name:        name,
 				Description: fmt.Sprintf("High-quality %s for your needs. Perfect for everyday use with excellent durability and performance.", name),
@@ -152,20 +152,20 @@ func seedProducts(ctx context.Context, repo *mongoRepo.ProductRepository) []*ent
 				Rating:      float64(rand.Intn(5)) + 1.0 + rand.Float64(),
 				ReviewCount: rand.Intn(100) + 1,
 			}
-
+			
 			if product.Rating > 5.0 {
 				product.Rating = 5.0
 			}
-
+			
 			if err := repo.Create(ctx, product); err != nil {
 				log.Printf("Failed to create product %s: %v\n", name, err)
 				continue
 			}
-
+			
 			products = append(products, product)
 		}
 	}
-
+	
 	return products
 }
 

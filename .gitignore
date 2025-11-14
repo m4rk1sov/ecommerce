@@ -26,7 +26,7 @@ go.work.sum
 
 # env file
 backend/.env
-temp/frontend/.env
+python/frontend/.env
 
 # Editor/IDE
 .idea/
@@ -48,3 +48,7 @@ bower_components
 psd
 thumb
 sketch
+
+# tests
+*venv/
+*venv
