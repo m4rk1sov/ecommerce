@@ -3,10 +3,10 @@ package mongodb
 import (
 	"context"
 	"time"
-	
+
 	"github.com/m4rk1sov/ecommerce/internal/entity"
 	"go.mongodb.org/mongo-driver/v2/mongo/options"
-	
+
 	"go.mongodb.org/mongo-driver/v2/bson"
 	"go.mongodb.org/mongo-driver/v2/mongo"
 )
@@ -24,12 +24,12 @@ func NewUserRepository(db *mongo.Database) *UserRepository {
 func (r *UserRepository) Create(ctx context.Context, user *entity.User) error {
 	user.CreatedAt = time.Now()
 	user.UpdatedAt = time.Now()
-	
+
 	result, err := r.collection.InsertOne(ctx, user)
 	if err != nil {
 		return err
 	}
-	
+
 	user.ID = result.InsertedID.(bson.ObjectID)
 	return nil
 }
@@ -54,7 +54,7 @@ func (r *UserRepository) GetByEmail(ctx context.Context, email string) (*entity.
 
 func (r *UserRepository) Update(ctx context.Context, user *entity.User) error {
 	user.UpdatedAt = time.Now()
-	
+
 	_, err := r.collection.UpdateOne(
 		ctx,
 		bson.M{"_id": user.ID},
