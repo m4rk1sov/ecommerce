@@ -1,20 +1,14 @@
 // src/api/client.js
-/**
- * Axios HTTP Client Configuration
- *
- * Why Axios Instance?
- * - Centralized configuration (base URL, timeout, headers)
- * - Request/Response interceptors (add auth token, handle errors)
- * - Consistent error handling across the app
- *
- * Backend Analogy: Like your HTTP client in Go with middleware
- */
 
+//  Axios Instance
+//  Centralized configuration (base URL, timeout, headers)
+//  Request/Response interceptors (add auth token, handle errors)
+//  Consistent error handling across the app
 import axios from 'axios';
 
-const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8080/api/v1';
+const API_URL = import.meta.env.VITE_API_URL;
 
-// Create axios instance with default config
+// Create axios instance with the default config
 const apiClient = axios.create({
     baseURL: API_URL,
     timeout: 10000, // 10 seconds (fail fast)
@@ -23,12 +17,7 @@ const apiClient = axios.create({
     },
 });
 
-/**
- * Request Interceptor
- * Automatically adds JWT token to every request
- *
- * Backend Analogy: Like your AuthMiddleware in Go
- */
+// automatically adds jwt token to every request
 apiClient.interceptors.request.use(
     (config) => {
         const token = localStorage.getItem('token');
@@ -37,8 +26,11 @@ apiClient.interceptors.request.use(
         }
 
         // Log request in development
-        if (process.env.NODE_ENV === 'development') {
-            console.log(`📤 ${config.method.toUpperCase()} ${config.url}`, config.data);
+        if (import.meta.env.DEV) {
+            console.log(
+                `📤 ${config.method.toUpperCase()} ${config.url}`,
+                config.data
+            );
         }
 
         return config;
@@ -46,22 +38,24 @@ apiClient.interceptors.request.use(
     (error) => {
         return Promise.reject(error);
     }
+    // Promise.reject
 );
 
-/**
- * Response Interceptor
- * Handles errors globally and logs responses
- *
- * Benefits:
- * - Automatic logout on 401 (unauthorized)
- * - Consistent error format
- * - Global error logging
- */
+// Response Interceptor
+// Handles errors globally and logs responses
+
+// Automatic logout on 401 (unauthorized)
+// Consistent error format
+// Global error logging
+
 apiClient.interceptors.response.use(
     (response) => {
         // Log response in development
-        if (process.env.NODE_ENV === 'development') {
-            console.log(`📥 ${response.config.method.toUpperCase()} ${response.config.url}`, response.data);
+        if (import.meta.env.DEV) {
+            console.log(
+                `📥 ${response.config.method.toUpperCase()} ${response.config.url}`,
+                response.data
+            );
         }
         return response;
     },
@@ -90,7 +84,7 @@ apiClient.interceptors.response.use(
 
             // Return formatted error
             return Promise.reject({
-                message: data.error || data.message || 'An error occurred',
+                message: data?.error || data?.message || 'An error occurred',
                 status,
                 data,
             });
