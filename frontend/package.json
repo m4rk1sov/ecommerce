@@ -3,6 +3,7 @@
   "version": "1.0.1",
   "private": true,
   "dependencies": {
+    "@tailwindcss/postcss": "^4.1.18",
     "@tailwindcss/vite": "^4.1.18",
     "autoprefixer": "^10.4.22",
     "axios": "^1.13.2",
