@@ -77,7 +77,7 @@ export const CartSidebar = () => {
                             {items.map(({ product, quantity }) => (
                                 <div key={product.id} className="flex items-start space-x-4 border-b pb-4">
                                     {/* Product Image */}
-                                    <div className="w-20 h-20 bg-gray-100 rounded flex-shrink-0">
+                                    <div className="w-20 h-20 bg-gray-100 rounded shrink-0">
                                         {product.imageUrl ? (
                                             <img
                                                 src={product.imageUrl}

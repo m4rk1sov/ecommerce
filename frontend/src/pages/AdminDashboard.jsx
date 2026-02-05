@@ -252,7 +252,7 @@ export const AdminDashboard = () => {
                             <tr key={product.id} className="hover:bg-gray-50">
                                 <td className="px-6 py-4 whitespace-nowrap">
                                     <div className="flex items-center">
-                                        <div className="flex-shrink-0 h-10 w-10 bg-gray-200 rounded"></div>
+                                        <div className="shrink-0 h-10 w-10 bg-gray-200 rounded"></div>
                                         <div className="ml-4">
                                             <div className="text-sm font-medium text-gray-900">
                                                 {product.name}

@@ -204,7 +204,7 @@ export const ProfilePage = () => {
                                                     key={index}
                                                     className="flex items-center space-x-4 border-t pt-4"
                                                 >
-                                                    <div className="w-16 h-16 bg-gray-200 rounded flex-shrink-0"></div>
+                                                    <div className="w-16 h-16 bg-gray-200 rounded shrink-0"></div>
                                                     <div className="flex-1">
                                                         <p className="font-medium text-gray-800">
                                                             {item.product?.name || 'Product'}
