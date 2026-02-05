@@ -7,10 +7,10 @@
  * - Without debounce: 6 API calls (l, la, lap, lapt, lapto, laptop)
  * - With debounce: 1 API call (after 500ms of inactivity)
  *
- * Why separate hook?
- * - Reusable across components
- * - Clean separation of concerns
- * - Testable in isolation
+ * Separate hook:
+ * Reusable across components
+ * Clean separation of concerns
+ * Testable in isolation
  */
 
 import { useState, useEffect } from 'react';

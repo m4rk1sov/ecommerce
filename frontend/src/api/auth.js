@@ -1,10 +1,7 @@
 /**
  * Authentication API
- *
- * Why separate files?
- * - Organized by domain (like backend services)
- * - Easy to find and maintain
- * - Single responsibility principle
+ * Organized by domain (like backend services)
+ * Single responsibility principle
  */
 
 import apiClient from './client';

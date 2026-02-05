@@ -52,15 +52,13 @@ export const useRecommendations = (algorithm = 'personalized', limit = 10) => {
 };
 
 /**
- * Context & Hooks Summary:
+ * Context and Hooks :
  *
- * ✅ AuthContext: Global auth state (user, token, login/logout)
- * ✅ CartContext: Shopping cart state (add, remove, checkout)
- * ✅ useDebounce: Optimizes search performance
- * ✅ useProducts: Fetches products with loading/error states
- * ✅ useRecommendations: Fetches recommendations
+ * AuthContext: Global auth state (user, token, login/logout)
+ * CartContext: Shopping cart state (add, remove, checkout)
+ * useDebounce: Optimizes search performance
+ * useProducts: Fetches products with loading/error states
+ * useRecommendations: Fetches recommendations
  *
  * Pattern: Custom hooks encapsulate logic, Context provides global state
- *
- * Next: UI Components (reusable building blocks)
  */

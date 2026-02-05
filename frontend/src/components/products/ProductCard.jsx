@@ -2,10 +2,9 @@
  * Product Card Component
  * Displays product in grid/list
  *
- * Why separate component?
- * - Reused in: HomePage, ProductsPage, RecommendationsPage
- * - Single place to update product display
- * - Encapsulates product interaction logic
+ * Reused in: HomePage, ProductsPage, RecommendationsPage
+ * Single place to update product display
+ * Encapsulates product interaction logic
  */
 
 import React from 'react';

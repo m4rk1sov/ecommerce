@@ -1,13 +1,11 @@
-
 /**
  * Authentication Context
  *
- * Why Context?
- * - Auth state needs to be accessible everywhere (header, protected routes, etc.)
- * - Avoid prop drilling (passing user through 10 components)
- * - Single source of truth for authentication
+ * Auth state needs to be accessible everywhere (header, protected routes, etc.)
+ * Avoid prop drilling (passing user through 10 components)
+ * Single source of truth for authentication
  *
- * Backend Analogy: Like dependency injection - provides auth service to all components
+ * Ddependency injection - provides auth service to all components
  */
 
 import React, { createContext, useState, useContext, useEffect } from 'react';
@@ -34,9 +32,9 @@ export const AuthProvider = ({ children }) => {
      * Initialize auth state from localStorage
      * Runs once when app loads
      *
-     * Why useEffect?
-     * - Side effect: reading from localStorage
-     * - Empty dependency array [] = run once on mount
+     * useEffect:
+     * Side effect: reading from localStorage
+     * Empty dependency array [] = run once on mount
      */
     useEffect(() => {
         const initAuth = () => {
@@ -132,10 +130,10 @@ export const AuthProvider = ({ children }) => {
  * Usage:
  * const { user, login, logout } = useAuth();
  *
- * Why custom hook?
- * - Cleaner than useContext(AuthContext)
- * - Can add validation/error handling
- * - Provides better error messages
+ * Custom hooks:
+ * Cleaner than useContext(AuthContext)
+ * Can add validation/error handling
+ * Provides better error messages
  */
 
 export const useAuth = () => {

@@ -1,10 +1,10 @@
 /**
  * Shopping Cart Context
  *
- * Why separate from AuthContext?
- * - Single Responsibility Principle
- * - Cart can work without auth (guest checkout)
- * - Different lifecycle (cart persists, auth expires)
+ * Separate AuthContext:
+ * Single Responsibility Principle
+ * Cart can work without auth (guest checkout)
+ * Different lifecycle (cart persists, auth expires)
  */
 
 import React, { createContext, useState, useContext, useEffect } from 'react';

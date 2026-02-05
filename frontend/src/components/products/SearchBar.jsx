@@ -35,22 +35,18 @@ export const SearchBar = ({ onSearch, placeholder = 'Search products...' }) => {
 };
 
 /**
- * Component Design Summary:
- *
- * Design Principles:
- * ✅ Atomic Design: Small, reusable components
- * ✅ Single Responsibility: Each component does one thing
- * ✅ Composition: Build complex UIs from simple components
- * ✅ Consistent Styling: Tailwind CSS utility classes
+ * Component Design Principles:
+ * Atomic Design: Small, reusable components
+ * Single Responsibility: Each component does one thing
+ * Composition: Build complex UIs from simple components
+ * Consistent Styling: Tailwind CSS utility classes
  *
  * Component Hierarchy:
  * Common (atoms) → Product Components (molecules) → Pages (organisms)
  *
- * Why Tailwind CSS?
- * - Utility-first (no custom CSS files)
- * - Consistent design system
- * - Fast development
- * - Small bundle size (purges unused classes)
- *
- * Next: Page components (full screens)
+ * Tailwind CSS:
+ * Utility-first (no custom CSS files)
+ * Consistent design system
+ * Fast development
+ * Small bundle size (purges unused classes)
  */

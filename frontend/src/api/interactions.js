@@ -2,10 +2,9 @@
  * Interaction API
  * Tracks user behavior (views, likes, purchases)
  *
- * Why track interactions?
- * - Improves recommendations
- * - Analytics for product team
- * - Personalization
+ * Improves recommendations
+ * Analytics for product team
+ * Personalization
  */
 
 import apiClient from './client';

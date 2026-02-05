@@ -2,12 +2,12 @@
  * Products Hook
  * Encapsulates product fetching logic
  *
- * Why custom hook?
- * - Reusable across multiple pages
- * - Handles loading/error states
- * - Single place to update API calls
+ * Custom hook:
+ * Reusable across multiple pages
+ * Handles loading/error states
+ * Single place to update API calls
  *
- * Backend Analogy: Like a service layer in your backend
+ * Like a service layer in the backend
  */
 
 import { useState, useEffect } from 'react';

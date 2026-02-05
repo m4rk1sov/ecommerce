@@ -1,9 +1,10 @@
-// src/api/client.js
+/**
+ * Axios Instance
+ * Centralized configuration (base URL, timeout, headers)
+ * Request/Response interceptors (add auth token, handle errors)
+ * Consistent error handling across the app
+ */
 
-//  Axios Instance
-//  Centralized configuration (base URL, timeout, headers)
-//  Request/Response interceptors (add auth token, handle errors)
-//  Consistent error handling across the app
 import axios from 'axios';
 
 const API_URL = import.meta.env.VITE_API_URL;
@@ -41,12 +42,14 @@ apiClient.interceptors.request.use(
     // Promise.reject
 );
 
-// Response Interceptor
-// Handles errors globally and logs responses
-
-// Automatic logout on 401 (unauthorized)
-// Consistent error format
-// Global error logging
+/**
+ * Response Interceptor
+ * Handles errors globally and logs responses
+ *
+ * Automatic logout on 401 (unauthorized)
+ * Consistent error format
+ * Global error logging
+ */
 
 apiClient.interceptors.response.use(
     (response) => {
