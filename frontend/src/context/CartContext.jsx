@@ -1,157 +1,76 @@
 /**
- * Shopping Cart Context
- *
- * Separate AuthContext:
- * Single Responsibility Principle
- * Cart can work without auth (guest checkout)
- * Different lifecycle (cart persists, auth expires)
+ * Cart Context — Façade over Redux Cart Slice
+ * Same pattern as AuthContext: clean DI via Context, state in Redux.
  */
 
-import React, { createContext, useState, useContext, useEffect } from 'react';
+import React, { createContext, useContext, useCallback } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import {
+    addToCart as addToCartAction,
+    removeFromCart as removeFromCartAction,
+    updateQuantity as updateQuantityAction,
+    clearCart as clearCartAction,
+    setCartOpen,
+    checkoutCart,
+    selectCartItems,
+    selectCartTotal,
+    selectCartItemCount,
+} from '../store/cartSlice';
 import { interactionsAPI } from '../api';
 
 const CartContext = createContext(null);
 
 export const CartProvider = ({ children }) => {
-    // Cart structure: { productId: { product, quantity } }
-    const [cart, setCart] = useState({});
-    const [isOpen, setIsOpen] = useState(false); // Sidebar cart visibility
+    const dispatch = useDispatch();
+    const items = useSelector(selectCartItems);
+    const isOpen = useSelector((state) => state.cart.isOpen);
+    const checkoutLoading = useSelector((state) => state.cart.checkoutLoading);
 
-    /**
-     * Load cart from localStorage on mount
-     * Persists cart across sessions
-     */
-    useEffect(() => {
-        const savedCart = localStorage.getItem('cart');
-        if (savedCart) {
-            try {
-                setCart(JSON.parse(savedCart));
-            } catch (error) {
-                console.error('Failed to parse cart:', error);
-            }
-        }
-    }, []);
-
-    /**
-     * Save cart to localStorage whenever it changes
-     * useEffect with dependency [cart]
-     */
-    useEffect(() => {
-        localStorage.setItem('cart', JSON.stringify(cart));
-    }, [cart]);
-
-    /**
-     * Add product to cart
-     *
-     * @param {Object} product - Product object from API
-     * @param {number} quantity - Quantity to add (default: 1)
-     */
-    const addToCart = async (product, quantity = 1) => {
-        setCart((prevCart) => {
-            const existing = prevCart[product.id] || { product, quantity: 0 };
-
-            return {
-                ...prevCart,
-                [product.id]: {
-                    product,
-                    quantity: existing.quantity + quantity,
-                },
-            };
-        });
-
-        // Record interaction with backend (async, don't wait)
+    const addToCart = useCallback(async (product, quantity = 1) => {
+        dispatch(addToCartAction({ product, quantity }));
         try {
             await interactionsAPI.recordCart(product.id);
         } catch (error) {
             console.error('Failed to record cart interaction:', error);
         }
+    }, [dispatch]);
 
-        // Show cart sidebar
-        setIsOpen(true);
-    };
+    const removeFromCart = useCallback((productId) => {
+        dispatch(removeFromCartAction(productId));
+    }, [dispatch]);
 
-    /**
-     * Remove product from cart
-     */
-    const removeFromCart = (productId) => {
-        setCart((prevCart) => {
-            const newCart = { ...prevCart };
-            delete newCart[productId];
-            return newCart;
-        });
-    };
+    const updateQuantity = useCallback((productId, quantity) => {
+        dispatch(updateQuantityAction({ productId, quantity }));
+    }, [dispatch]);
 
-    /**
-     * Update quantity
-     */
-    const updateQuantity = (productId, quantity) => {
-        if (quantity <= 0) {
-            removeFromCart(productId);
-            return;
-        }
+    const clearCart = useCallback(() => {
+        dispatch(clearCartAction());
+    }, [dispatch]);
 
-        setCart((prevCart) => ({
-            ...prevCart,
-            [productId]: {
-                ...prevCart[productId],
-                quantity,
-            },
-        }));
-    };
+    const setIsOpen = useCallback((open) => {
+        dispatch(setCartOpen(open));
+    }, [dispatch]);
 
-    /**
-     * Clear entire cart
-     */
-    const clearCart = () => {
-        setCart({});
-    };
+    const getCartTotal = useCallback(() => {
+        return items.reduce((total, item) => total + item.product.price * item.quantity, 0);
+    }, [items]);
 
-    /**
-     * Calculate cart totals
-     * useMemo would optimize this, but keeping it simple
-     */
-    const getCartTotal = () => {
-        return Object.values(cart).reduce(
-            (total, item) => total + item.product.price * item.quantity,
-            0
-        );
-    };
+    const getItemCount = useCallback(() => {
+        return items.reduce((count, item) => count + item.quantity, 0);
+    }, [items]);
 
-    const getItemCount = () => {
-        return Object.values(cart).reduce(
-            (count, item) => count + item.quantity,
-            0
-        );
-    };
-
-    /**
-     * Checkout function
-     * Records purchase and clears cart
-     */
-    const checkout = async () => {
+    const checkout = useCallback(async () => {
         try {
-            const products = Object.values(cart).map(item => ({
-                productId: item.product.id,
-                quantity: item.quantity,
-                price: item.product.price,
-            }));
-
-            await interactionsAPI.recordPurchase({
-                products,
-                total: getCartTotal(),
-                status: 'completed',
-            });
-
-            clearCart();
+            await dispatch(checkoutCart()).unwrap();
             return { success: true };
-        } catch (error) {
-            return { success: false, error: error.message };
+        } catch (err) {
+            return { success: false, error: err };
         }
-    };
+    }, [dispatch]);
 
     const value = {
-        cart,
-        items: Object.values(cart), // Array of cart items
+        cart: {},
+        items,
         isOpen,
         setIsOpen,
         addToCart,
@@ -161,20 +80,16 @@ export const CartProvider = ({ children }) => {
         checkout,
         getCartTotal,
         getItemCount,
+        checkoutLoading,
     };
 
     return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
 };
 
-/**
- * Custom Hook: useCart
- */
 export const useCart = () => {
     const context = useContext(CartContext);
-
     if (!context) {
         throw new Error('useCart must be used within CartProvider');
     }
-
     return context;
 };

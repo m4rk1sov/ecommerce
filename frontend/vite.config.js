@@ -8,6 +8,18 @@ export default defineConfig({
         tailwindcss(),
     ],
     build: {
-        outDir: 'build', // CRA's default build output
+        outDir: 'build',
+    },
+    test: {
+        globals: true,
+        environment: 'jsdom',
+        setupFiles: './src/setupTests.js',
+        css: true,
+        coverage: {
+            provider: 'v8',
+            reporter: ['text', 'html', 'lcov'],
+            include: ['src/**/*.{js,jsx}'],
+            exclude: ['src/index.jsx', 'src/setupTests.js'],
+        },
     },
 });

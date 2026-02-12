@@ -10,6 +10,7 @@ export const Input = ({
                           type = 'text',
                           value,
                           onChange,
+                          onBlur,
                           placeholder = '',
                           error = '',
                           required = false,
@@ -31,6 +32,7 @@ export const Input = ({
                 type={type}
                 value={value}
                 onChange={onChange}
+                onBlur={onBlur}
                 placeholder={placeholder}
                 required={required}
                 disabled={disabled}
